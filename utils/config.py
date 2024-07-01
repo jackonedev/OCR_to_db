@@ -1,11 +1,14 @@
 import os
 
 
-# Obtain current file path
+# current file path
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
+# previous directory from the current file path
+ROOT_DIR = os.path.dirname(BASE_DIR)
+
 # Obtain the relative path to the static directory from the current file
-STATIC_DIR = os.path.join(BASE_DIR, "static")
+STATIC_DIR = os.path.join(ROOT_DIR, "static")
 
 # Create a list of each of the image files in the static/img directory
 img_dir = f"{STATIC_DIR}/img"
