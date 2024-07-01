@@ -12,6 +12,6 @@ format:
 lint:
 	pylint --disable=R,C *.py ocrlogic/*.py utils/*.py tests/*.py
 
-models_install:
+install_models:
 	sudo apt-get update &&\
 		sudo apt-get install -y tesseract-ocr libtesseract-dev tesseract-ocr-spa
