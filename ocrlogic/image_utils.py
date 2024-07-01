@@ -14,10 +14,10 @@ def search_img(img_path):
 
 
 @contextmanager
-def open_image(img_path):
+def open_static_image(img_path):
     # Initial configuration: search for the image
     img = search_img(img_path)
-    try: #self.__enter__
+    try:  # self.__enter__
         if img is not None:
             print(f"Found {img_path}")
             # Yield the resource: in this case, the path of the found image
@@ -25,6 +25,5 @@ def open_image(img_path):
         else:
             # If the image is not found, you can either yield None or raise an exception
             yield None
-    finally: # self.__exit__
+    finally:  # self.__exit__
         pass
-
