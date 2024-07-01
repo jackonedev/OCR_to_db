@@ -16,6 +16,21 @@ https://tesseract-ocr.github.io/tessdoc/Installation.html
 
 
 
+## Instalacion del virtual environment
+
+El resto de las dependencias pueden hacerse una vez activado el entorno adecuado con el comando `make install`
+
+## Ejecucion por linea de comando
+
+Puede simplificar la ejecucion por medio de `chmod -x ocr_cli.py`.
+Luego puede ejecutar el fichero directamente desde un shell:
+
+```shell
+./ocr_cli.py --help
+./ocr_cli.py --img_path="gran_registro"
+./ocr_cli.py --img_path="gran_registro" --lang="spa"
+```
+
 
 ## TODOs:
 * pasar la imagen del devcontainer.json a un docker-compose.yml file para incorporar nuevos servicios (PostgreSQL)
