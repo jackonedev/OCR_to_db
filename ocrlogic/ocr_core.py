@@ -15,7 +15,9 @@ def ocr_core(img_path, lang="eng"):
 
     """
     if lang not in ["eng", "spa"]:
-        raise ValueError(f"Language {lang} not supported. Please choose between 'eng' or 'spa'.")
+        raise ValueError(
+            f"Language {lang} not supported. Please choose between 'eng' or 'spa'."
+        )
 
     print(f"Searching for {img_path}")
 
