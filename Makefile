@@ -7,7 +7,7 @@ test:
 
 format:
 	isort --profile=black . &&\
-		black --line-length 88 *.py
+		black --line-length 88 .
 
 lint:
-	pylint --disable=R,C *.py
+	pylint --disable=R,C *.py ocrlogic/*.py utils/*.py
