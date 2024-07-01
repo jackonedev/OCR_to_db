@@ -35,4 +35,6 @@ Luego puede ejecutar el fichero directamente desde un shell:
 
 
 ## TODOs:
+* Crear la notebook en colab para compartir
+* crear la API para servicio
 * pasar la imagen del devcontainer.json a un docker-compose.yml file para incorporar nuevos servicios (PostgreSQL)
