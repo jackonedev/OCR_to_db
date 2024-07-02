@@ -4,7 +4,7 @@ from PIL import Image
 from ocrlogic.image_utils import open_static_image
 
 
-def ocr_core(img_path, lang="eng"):
+async def ocr_core(img_path, lang="eng"):
     """
     This function will handle the core OCR processing of images.
 
@@ -21,7 +21,13 @@ def ocr_core(img_path, lang="eng"):
 
     print(f"Searching for {img_path}")
 
-    # Execution searching in ./static/images directory
-    with open_static_image(img_path) as img:
-        if img is not None:
-            return tesseract.image_to_string(Image.open(img), lang=lang)
+    try:
+        # Execution provided by the api service
+        return tesseract.image_to_string(Image.open(img_path), lang=lang)
+    except FileNotFoundError:
+        # Execution searching in ./static/images directory
+        with open_static_image(img_path) as img:
+            if img is not None:
+                return tesseract.image_to_string(Image.open(img), lang=lang)
+            else:
+                return "Image not found."

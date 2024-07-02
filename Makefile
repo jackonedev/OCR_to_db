@@ -1,17 +1,19 @@
 install:
-	pip install --upgrade pip &&\
-		pip install -r requirements.txt
+	cd ocr_service &&\
+		make install
 
 test:
-	python -m pytest -vv --cov=ocrlogic tests/*.py
+	cd ocr_service &&\
+		make test
 
 format:
-	isort --profile=black . &&\
-		black --line-length 88 .
+	cd ocr_service &&\
+		make format
 
 lint:
-	pylint --disable=R,C *.py ocrlogic/*.py utils/*.py tests/*.py
+	cd ocr_service &&\
+		make lint
 
 install_models:
-	sudo apt-get update &&\
-		sudo apt-get install -y tesseract-ocr libtesseract-dev tesseract-ocr-spa
+	cd ocr_service &&\
+		make install_models

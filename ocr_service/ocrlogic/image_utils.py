@@ -1,9 +1,21 @@
+import os
+import shutil
 from contextlib import contextmanager
 
 from utils.config import IMG_ROUTES
 
 
-def search_img(img_path):
+def _save_file_to_server(uploaded_file, path=".", save_as="default"):
+    extension = os.path.splitext(uploaded_file.filename)[-1]
+    temp_file = os.path.join(path, save_as + extension)
+
+    with open(temp_file, "wb") as buffer:
+        shutil.copyfileobj(uploaded_file.file, buffer)
+
+    return temp_file
+
+
+def _search_img(img_path):
     """
     Search images in the './static/images' directory.
     """
@@ -16,7 +28,7 @@ def search_img(img_path):
 @contextmanager
 def open_static_image(img_path):
     # Initial configuration: search for the image
-    img = search_img(img_path)
+    img = _search_img(img_path)
     try:  # self.__enter__
         if img is not None:
             print(f"Found {img_path}")

@@ -1,6 +1,5 @@
 import os
 
-
 # current file path
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
