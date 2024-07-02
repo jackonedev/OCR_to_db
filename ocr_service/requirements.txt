@@ -9,3 +9,4 @@ pytesseract==0.3.10
 fire==0.6.0
 python-multipart==0.0.9
 fastapi==0.111.0
+pytest-asyncio==0.23.7
