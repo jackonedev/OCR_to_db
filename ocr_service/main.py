@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from ocr_service.api import service
+from api import service
 
 app = FastAPI()
 
