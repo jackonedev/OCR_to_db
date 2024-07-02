@@ -9,15 +9,17 @@ from typing import Annotated
 
 from fastapi import APIRouter, File, HTTPException, UploadFile
 
-from ocr_service.ocrlogic import image_utils
-from ocr_service.ocrlogic.ocr_core import ocr_core
+from .tools import _save_file_to_server
+from ocrlogic.ocr_core import ocr_core
+# from .middleware import send_job_to_llm
 
-# from ocr_service.api.middleware import send_job_to_llm
+router = APIRouter(
+    prefix="/ocr",
+    tags=["OCR"],
+)
 
-router = APIRouter()
 
-
-@router.post("api/v1/ocr/")
+@router.post("/images")
 async def ocr_image(
     images: Annotated[
         list[UploadFile], File(description="Multiple Images with text to be extracted")
@@ -34,7 +36,7 @@ async def ocr_image(
 
     for img in images:
         print("Images Uploaded: ", img.filename)
-        temp_file = image_utils._save_file_to_server(
+        temp_file = _save_file_to_server(
             img, path="./", save_as=img.filename
         )
         tasks.append(asyncio.create_task(ocr_core(img_path=temp_file, lang=lang)))
@@ -43,4 +45,6 @@ async def ocr_image(
     for i, text in enumerate(texts):
         response[images[i].filename] = [text]
 
+    # Enviamos el texto al servicio de LLM
+    # response = await send_job_to_llm(response)
     return response
