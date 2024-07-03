@@ -9,8 +9,10 @@ from typing import Annotated
 
 from fastapi import APIRouter, File, HTTPException, UploadFile
 
-from .tools import _save_file_to_server
 from ocrlogic.ocr_core import ocr_core
+
+from .tools import _save_file_to_server
+
 # from .middleware import send_job_to_llm
 
 router = APIRouter(
@@ -36,12 +38,15 @@ async def ocr_image(
 
     for img in images:
         print("Images Uploaded: ", img.filename)
-        temp_file = _save_file_to_server(
-            img, path="./", save_as=img.filename
-        )
+        temp_file = _save_file_to_server(img, path="./", save_as=img.filename)
         tasks.append(asyncio.create_task(ocr_core(img_path=temp_file, lang=lang)))
-    # Procesamos el texto y actualizamos la response
-    texts = await asyncio.gather(*tasks)
+
+    # OCR execution
+    try:
+        texts = await asyncio.gather(*tasks)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
     for i, text in enumerate(texts):
         response[images[i].filename] = [text]
 
