@@ -12,10 +12,10 @@ La arquitectura es por micro-servicios, actualmente se encuentran en desarrollo:
 La idea es pasar de una imagen a un registro en una tabla dentro de una base de datos SQL. El producto final involucra la gestion de la base de datos por medio de inteligencia artificial. También se pretende aceptar queries en natural language. Los servicios se comunican por API REST utilizando FastAPI.
 
 
-## Run the poject
+## Run the project
 
-1. Run `docker compose up` and the app would be running exposing port 8000.
-2. Check if `localhost:8000` is running on the browser (you will see a hello message).
-3. Go to `localhost:8000/docs` and click on "Try it out" in the OCR tag.
+1. Run `docker-compose up` and the app will be running exposing port 8000.
+2. Check if `localhost:8000` runs on the browser (you will see a hello message).
+3. Go to `localhost:8000/docs` and click "Try it out" in the OCR tag.
 4. Use the interface to make a POST request to the `localhost:8000/ocr/images`, you can upload one or many images (that must contain text), and also set the language to Spanish or English.
 5. Click on the "Execute" button and check the response.
