@@ -3,7 +3,7 @@ from contextlib import contextmanager
 from utils.config import IMG_ROUTES
 
 
-def search_img(img_path):
+def _search_img(img_path):
     """
     Search images in the './static/images' directory.
     """
@@ -16,7 +16,7 @@ def search_img(img_path):
 @contextmanager
 def open_static_image(img_path):
     # Initial configuration: search for the image
-    img = search_img(img_path)
+    img = _search_img(img_path)
     try:  # self.__enter__
         if img is not None:
             print(f"Found {img_path}")

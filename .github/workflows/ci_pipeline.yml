@@ -16,7 +16,7 @@ jobs:
     - name: Install dependencies
       run: |
         make install
-    - name: Install OCR models (english and spanish)
+    - name: Install OCR models (ocr_service)
       run: |
         make install_models
     - name: Format code
@@ -27,4 +27,4 @@ jobs:
         make lint
     - name: Test with pytest
       run: |
-        make tests
+        make test

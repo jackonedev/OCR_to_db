@@ -36,7 +36,8 @@
 				"ms-python.python",
 				"ms-python.debugpy",
 				"ms-vscode.remote-repositories",
-				"bluebrown.yamlfmt"
+				"bluebrown.yamlfmt",
+				"martellaj.theme-microsoft-graph"
 			]
 		}
 	}
