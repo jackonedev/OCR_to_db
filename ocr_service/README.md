@@ -2,14 +2,7 @@
 
 [![CI pipeline with Github Actions](https://github.com/jackonedev/OCR_to_db/actions/workflows/ci_pipeline.yml/badge.svg)](https://github.com/jackonedev/OCR_to_db/actions/workflows/ci_pipeline.yml)
 # OCR_to_db
-La idea es pasar de una imagen a un registro en una tabla dentro de una base de datos SQL. El producto final involucra la gestion de la base de datos por medio de inteligencia artificial. También se pretende aceptar queries en natural language. El mayor esfuerzo se pondrá en la infraestructura de pipelines CI/CD- monolithic service - web frameworks
-
-
-## Instalando el modelo OCR en el container:
-
-```devcontainer.json
-"postCreateCommand": "sudo apt-get update && sudo apt-get install -y vim tesseract-ocr libtesseract-dev tesseract-ocr-spa",
-```
+La idea es pasar de una imagen a un registro en una tabla dentro de una base de datos SQL. El producto final involucra la gestion de la base de datos por medio de inteligencia artificial. También se pretende aceptar queries en natural language. 
 
 **Para el modelo en español se debe instalar:**
 `sudo apt-get install tesseract-ocr-spa`
@@ -36,6 +29,7 @@ Luego puede ejecutar el fichero directamente desde un shell:
 
 
 ## TODOs:
-* Crear la notebook en colab para compartir
-* crear la API para servicio
-* pasar la imagen del devcontainer.json a un docker-compose.yml file para incorporar nuevos servicios (PostgreSQL)
+* ~~Crear la notebook en colab para compartir~~
+* ~~crear la API para servicio y tests~~
+* ~~agregar docker-compose.yml file para incorporar nuevos servicios (PostgreSQL, RabbitMQ)~~
+* generar middleware con RabbitMQ para conexion con llm_service
