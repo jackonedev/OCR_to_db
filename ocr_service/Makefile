@@ -3,7 +3,7 @@ install:
 		pip install -r requirements.txt
 
 test:
-	python -m pytest -vv --cov=ocrlogic tests/*.py
+	python -m pytest -vv --cov=ocrlogic --cov=api tests/*.py
 
 format:
 	isort --profile=black . &&\
