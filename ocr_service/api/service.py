@@ -45,7 +45,7 @@ async def ocr_image(
     try:
         texts = await asyncio.gather(*tasks)
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=str(e)) from e
 
     for i, text in enumerate(texts):
         response[images[i].filename] = [text]

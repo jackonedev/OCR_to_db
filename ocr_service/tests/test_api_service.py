@@ -22,6 +22,7 @@ async def test_ocrcore_supported_lang_param():
     assert isinstance(response.json(), dict)
     assert isinstance(response.json().get(img_name), list)
 
+
 @pytest.mark.asyncio
 async def test_multiple_images():
     img_paths = IMG_ROUTES[:2]
