@@ -15,7 +15,7 @@ La idea es pasar de una imagen a un registro en una tabla dentro de una base de 
 ## Run the project
 
 1. Run `docker-compose up` and the app will be running exposing port 8000.
-2. Check if `localhost:8000` runs on the browser (you will see a hello message).
-3. Go to `localhost:8000/docs` and click "Try it out" in the OCR tag.
-4. Use the interface to make a POST request to the `localhost:8000/ocr/images`, you can upload one or many images (that must contain text), and also set the language to Spanish or English.
+2. Check if `localhost:8000/check` runs on the browser (you will see a hello message).
+3. Go to `localhost:8000` and click "Try it out" in the OCR tag.
+4. Use the interface to make a POST request to the `localhost:8000/ocr/images`, you can upload one or many images (that must contain text), and also set the language to Spanish (spa) or English (eng).
 5. Click on the "Execute" button and check the response.
