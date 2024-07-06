@@ -11,9 +11,8 @@ from fastapi import APIRouter, File, HTTPException, UploadFile
 
 from ocrlogic.ocr_core import ocr_core
 
+from .middleware_out import rabbitmq_context
 from .tools import _save_file_to_server
-
-# from .middleware import send_job_to_llm
 
 router = APIRouter(
     prefix="/ocr",
@@ -50,6 +49,22 @@ async def ocr_image(
     for i, text in enumerate(texts):
         response[images[i].filename] = [text]
 
-    # Enviamos el texto al servicio de LLM
-    # response = await send_job_to_llm(response)
+    # Send text to LLM service
+    with rabbitmq_context(host="localhost", request_queue="ocr_llm") as (
+        client,
+        connection,
+        channel,
+    ):
+        for i, k in enumerate(list(response.keys())):
+            client.send_message(channel, response[k][0])
+            try:
+                llm_response = client.get_response(connection, timeout=8)
+                print(f"Received response: {llm_response}")
+                response[images[i].filename].append(llm_response)
+            except TimeoutError as e:
+                print(str(e))
+                response[images[i].filename].append(
+                    "No response received within the timeout period"
+                )
+
     return response
