@@ -17,18 +17,34 @@ class RabbitMQReceiver:
         self.send_response(response, properties.reply_to, properties.correlation_id)
 
     def process_message(self, body):
+        """
+        Process the given message body using the langchain chain.
+
+        Args:
+            body: The message body to be processed.
+
+        Returns:
+            The result of invoking the langchain chain on the message body.
+        """
         return chain.invoke(body)
 
     def send_response(self, response, reply_to, correlation_id):
-        connection = pika.BlockingConnection(pika.ConnectionParameters(self.host))
-        channel = connection.channel()
-        channel.basic_publish(
-            exchange="",
-            routing_key=reply_to,
-            properties=pika.BasicProperties(correlation_id=correlation_id),
-            body=response,
-        )
-        connection.close()
+        try:
+            connection = pika.BlockingConnection(pika.ConnectionParameters(self.host))
+            channel = connection.channel()
+            channel.basic_publish(
+                exchange="",
+                routing_key=reply_to,
+                properties=pika.BasicProperties(correlation_id=correlation_id),
+                body=response,
+            )
+        except pika.exceptions.AMQPConnectionError as e:
+            print(f"Attempt to connect failed: {e}")
+        except Exception as e:
+            print(f"Unexpected error: {e}")
+        finally:
+            if "connection" in locals() and connection.is_open:
+                connection.close()
 
     def start_consuming(self):
         connection = pika.BlockingConnection(pika.ConnectionParameters(self.host))
@@ -47,7 +63,7 @@ class RabbitMQReceiver:
             connection.close()
 
 
-# Example usage:
+# Receiver from ocr_service/api/service.py: POST /ocr/images
 if __name__ == "__main__":
-    receiver = RabbitMQReceiver(host="localhost", queue="my_test_queue")
+    receiver = RabbitMQReceiver(host="localhost", queue="ocr_llm")
     receiver.start_consuming()
