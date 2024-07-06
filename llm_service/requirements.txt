@@ -7,6 +7,8 @@ ipython==8.26.0
 pillow==10.4.0
 python-multipart==0.0.9
 langchain==0.2.6
+langchain-anthropic==0.1.19
+langchain-openai==0.1.14
 pika==1.3.2
 langchain-cli==0.0.25
 langserve[all]
