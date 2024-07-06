@@ -3,11 +3,10 @@ FROM python:3.10-slim
 EXPOSE 8000
 
 ENV PYTHONDONTWRITEBYTECODE=1
-
 ENV PYTHONUNBUFFERED=1
 
 COPY ocr_service/requirements.txt .
-RUN python -m pip install -r requirements.txt
+RUN python -m pip install --upgrade pip && python -m pip install -r requirements.txt
 
 RUN apt-get update && \
 apt-get install -y tesseract-ocr libtesseract-dev tesseract-ocr-spa
