@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from langserve import add_routes
