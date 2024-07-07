@@ -1,9 +1,8 @@
+import logging
 import os
 from datetime import date, datetime
 from operator import itemgetter
-from typing import List, Optional, Type
-import logging
-
+from typing import List, Optional
 
 from dotenv import load_dotenv
 
@@ -12,9 +11,7 @@ load_dotenv()
 
 from langchain_core.pydantic_v1 import BaseModel, Field
 from langchain_core.runnables import RunnableLambda, RunnablePassthrough
-from langchain_openai import ChatOpenAI, OpenAI
-
-
+from langchain_openai import ChatOpenAI
 
 # create a filehandler logger
 log_dir = os.path.dirname(os.path.realpath(__file__))
@@ -27,10 +24,18 @@ formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(messag
 fh.setFormatter(formatter)
 logger.addHandler(fh)
 
-def _log(res):
-    """Log the input from RabbitMQ and the output from LLM (GPT 4.o)."""
-    logger.debug(res)
+
+def _log_input(res):
+    """Log the input from RabbitMQ"""
+    logger.debug("Received from RabbitMQ:\n%s", res)
     return res
+
+
+def _log_output(res):
+    """Log the output from LLM (GPT 4o)"""
+    logger.debug("LLM output:\n%s", res)
+    return res
+
 
 class Receipt(BaseModel):
     """Information about a purchase receipt."""
@@ -69,28 +74,30 @@ llm = ChatOpenAI(model="gpt-3.5-turbo-0125", temperature=0, api_key=api_key)
 llm_schema = llm.bind_tools([Receipt])
 
 
-
 def _model_ingest(res):
-    return res["input"]
+    """LLM model ingestion
+
+    Aclaration: a llm with tool is not a Chat model that allows a chat input, just a string input.
+    """
+    # e.g. prompt = """I need to extract the following information from this receipt, \
+    # all fields are optional, be accurate:\n\n{0}"""
+    prompt = "{}\n\n--- all fields are optional, be accurate ---"
+    return prompt.format(res["input"])
+
 
 def _tool_parser(res):
     return res.tool_calls
 
-def _final_parser(res):
-    return res["output"]
+
+# def _final_parser(res):
+#     return res["output"]
 
 
 chain = (
-    {
-        "log": RunnableLambda(_log),
-        "input": RunnablePassthrough()
-    }
+    {"log": RunnableLambda(_log_input), "input": RunnablePassthrough()}
     | RunnableLambda(_model_ingest)
     | llm_schema
     | RunnableLambda(_tool_parser)
-    | {
-        "log": RunnableLambda(_log),
-        "output": RunnablePassthrough()
-    }
-    | RunnableLambda(_final_parser)
+    | {"log": RunnableLambda(_log_output), "output": RunnablePassthrough()}
+    | itemgetter("output")
 )
