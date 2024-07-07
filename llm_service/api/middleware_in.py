@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import json
+
 import pika
 
 from llmlogic.llm_core import chain
@@ -8,6 +10,18 @@ class RabbitMQReceiver:
     def __init__(self, host="localhost", queue="default"):
         self.host = host
         self.queue = queue
+        self.port = "5672"
+        self.virtual_host = "/"
+        self.credentials = pika.PlainCredentials("guest", "guest")
+
+    @property
+    def connection_parameters(self):
+        return pika.ConnectionParameters(
+            host=self.host,
+            port=self.port,
+            virtual_host=self.virtual_host,
+            credentials=self.credentials,
+        )
 
     def on_message(self, ch, method, properties, body):
         "Callback function for retrieving answers from the message queue."
@@ -15,18 +29,21 @@ class RabbitMQReceiver:
         # Processing the message
         response = self.process_message(body)
         # sending the response
-        self.send_response(response, properties.reply_to, properties.correlation_id)
+        self.send_response(
+            json.dumps(response), properties.reply_to, properties.correlation_id
+        )
 
     def process_message(self, body):
-        # TODO: consider sending a callable to the constructor of RabbitMQReceiver
         """
         Process the given message body using the langchain llmlogic/llm_core.py chain.
         """
+        # from bytes to string
+        body = body.decode("utf-8")
         return chain.invoke(body)
 
     def send_response(self, response, reply_to, correlation_id):
         try:
-            connection = pika.BlockingConnection(pika.ConnectionParameters(self.host))
+            connection = pika.BlockingConnection(self.connection_parameters)
             channel = connection.channel()
             channel.basic_publish(
                 exchange="",
@@ -43,7 +60,7 @@ class RabbitMQReceiver:
                 connection.close()
 
     def start_consuming(self):
-        connection = pika.BlockingConnection(pika.ConnectionParameters(self.host))
+        connection = pika.BlockingConnection(self.connection_parameters)
         channel = connection.channel()
         channel.queue_declare(queue=self.queue)
         channel.basic_consume(
