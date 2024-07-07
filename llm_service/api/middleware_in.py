@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import pika
 
-from ..llmlogic.llm_core import chain
+from llmlogic.llm_core import chain
 
 
 class RabbitMQReceiver:
@@ -10,6 +10,7 @@ class RabbitMQReceiver:
         self.queue = queue
 
     def on_message(self, ch, method, properties, body):
+        "Callback function for retrieving answers from the message queue."
         print(f"Received message: {body}")
         # Processing the message
         response = self.process_message(body)
@@ -17,14 +18,9 @@ class RabbitMQReceiver:
         self.send_response(response, properties.reply_to, properties.correlation_id)
 
     def process_message(self, body):
+        # TODO: consider sending a callable to the constructor of RabbitMQReceiver
         """
-        Process the given message body using the langchain chain.
-
-        Args:
-            body: The message body to be processed.
-
-        Returns:
-            The result of invoking the langchain chain on the message body.
+        Process the given message body using the langchain llmlogic/llm_core.py chain.
         """
         return chain.invoke(body)
 
@@ -57,13 +53,8 @@ class RabbitMQReceiver:
         try:
             channel.start_consuming()
         except KeyboardInterrupt:
-            print("Stopping receiver...")
+            print("\nStopping receiver...")
             channel.stop_consuming()
         finally:
             connection.close()
-
-
-# Receiver from ocr_service/api/service.py: POST /ocr/images
-if __name__ == "__main__":
-    receiver = RabbitMQReceiver(host="localhost", queue="ocr_llm")
-    receiver.start_consuming()
+            print("Receiver stopped\n")
