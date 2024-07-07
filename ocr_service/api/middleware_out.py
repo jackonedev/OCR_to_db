@@ -114,7 +114,14 @@ def rabbitmq_context(host="localhost", request_queue="default"):
 
     """
     client = RabbitMQClient(host, request_queue)
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host))
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(
+            host=host,
+            port="5672",
+            virtual_host="/",
+            credentials=pika.PlainCredentials("guest", "guest"),
+        )
+    )
     channel = connection.channel()
     channel.queue_declare(queue=request_queue)
 
