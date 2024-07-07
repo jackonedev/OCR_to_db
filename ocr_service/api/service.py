@@ -8,6 +8,7 @@ import asyncio
 from typing import Annotated
 
 from fastapi import APIRouter, File, HTTPException, UploadFile
+import pika
 
 from ocrlogic.ocr_core import ocr_core
 
@@ -50,21 +51,25 @@ async def ocr_image(
         response[images[i].filename] = [text]
 
     # Send text to LLM service
-    with rabbitmq_context(host="rabbitmq", request_queue="ocr_llm") as (
-        client,
-        connection,
-        channel,
-    ):
-        for i, k in enumerate(list(response.keys())):
-            client.send_message(channel, response[k][0])
-            try:
-                llm_response = client.get_response(connection, timeout=8)
-                print(f"Received response: {llm_response}")
-                response[images[i].filename].append(llm_response)
-            except TimeoutError as e:
-                print(str(e))
-                response[images[i].filename].append(
-                    "No response received within the timeout period"
-                )
+    try:
+        with rabbitmq_context(host="rabbitmq", request_queue="ocr_llm") as (
+            client,
+            connection,
+            channel,
+        ):
+            for i, k in enumerate(list(response.keys())):
+                client.send_message(channel, response[k][0])
+                try:
+                    llm_response = client.get_response(connection, timeout=8)
+                    print(f"Received response: {llm_response}")
+                    response[images[i].filename].append(llm_response)
+                except TimeoutError as e:
+                    print(str(e))
+                    response[images[i].filename].append(
+                        "No response received within the timeout period"
+                    )
+    except pika.exceptions.AMQPConnectionError as e:
+        print(str(e))
+        raise HTTPException(status_code=503, detail="RabbitMQ Service Unavailable") from e
 
     return response
