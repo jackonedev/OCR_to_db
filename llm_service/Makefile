@@ -10,7 +10,7 @@ format:
 		black --line-length 88 .
 
 lint:
-	pylint --disable=R,C *.py llmlogic/*.py
+	pylint --disable=R,C,W0613,W0718 *.py llmlogic/*.py api/*.py
 
 # install_models:
 # 	sudo apt-get update &&\
