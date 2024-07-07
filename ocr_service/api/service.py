@@ -50,7 +50,7 @@ async def ocr_image(
         response[images[i].filename] = [text]
 
     # Send text to LLM service
-    with rabbitmq_context(host="localhost", request_queue="ocr_llm") as (
+    with rabbitmq_context(host="rabbitmq", request_queue="ocr_llm") as (
         client,
         connection,
         channel,
