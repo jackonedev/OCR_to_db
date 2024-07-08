@@ -10,6 +10,9 @@ services:
       - 8000:8000
     depends_on:
       - rabbitmq
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
 
   ocrllm-listener:
     build:
