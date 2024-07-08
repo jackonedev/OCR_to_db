@@ -1,16 +1,22 @@
 #!/usr/bin/env python3
 import json
+import os
 
 import pika
 
 from llmlogic.llm_core import chain
 
 
+
+rabbitmq_host = os.getenv("RABBITMQ_HOST", "localhost")
+rabbitmq_port = int(os.getenv("RABBITMQ_PORT", "5672"))
+
+
 class RabbitMQReceiver:
-    def __init__(self, host="localhost", queue="default"):
+    def __init__(self, host=rabbitmq_host, queue="default"):
         self.host = host
         self.queue = queue
-        self.port = "5672"
+        self.port = rabbitmq_port
         self.virtual_host = "/"
         self.credentials = pika.PlainCredentials("guest", "guest")
 
