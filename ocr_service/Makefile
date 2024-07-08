@@ -10,7 +10,7 @@ format:
 		black --line-length 88 .
 
 lint:
-	pylint --disable=R,C *.py ocrlogic/*.py utils/*.py tests/*.py
+	pylint --disable=R,C,W0613 *.py ocrlogic/*.py utils/*.py tests/*.py api/*.py
 
 install_models:
 	sudo apt-get update &&\

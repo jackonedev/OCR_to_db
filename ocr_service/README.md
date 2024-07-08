@@ -32,4 +32,7 @@ Luego puede ejecutar el fichero directamente desde un shell:
 * ~~Crear la notebook en colab para compartir~~
 * ~~crear la API para servicio y tests~~
 * ~~agregar docker-compose.yml file para incorporar nuevos servicios (PostgreSQL, RabbitMQ)~~
-* generar middleware con RabbitMQ para conexion con llm_service
+* ~~generar middleware con RabbitMQ para conexion con llm_service~~
+* check for test that generates unnecessary files
+* Review google fire test documentation
+* aloud "eng+spa" option for lang parameter
