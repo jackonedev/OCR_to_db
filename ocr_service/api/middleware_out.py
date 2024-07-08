@@ -27,7 +27,7 @@ class RabbitMQClient:
 
     """
 
-    def __init__(self, host="localhost", request_queue="default"):
+    def __init__(self, host=rabbitmq_host, request_queue="default"):
         self.host = host
         self.request_queue = request_queue
         self.response_queue = None
