@@ -1,9 +1,12 @@
+import os
 import time
 import uuid
 from contextlib import contextmanager
 
 import pika
 
+rabbitmq_host = os.getenv('RABBITMQ_HOST', 'localhost')
+rabbitmq_port = int(os.getenv('RABBITMQ_PORT', 5672))
 
 class RabbitMQClient:
     """
@@ -87,7 +90,7 @@ class RabbitMQClient:
 
 
 @contextmanager
-def rabbitmq_context(host="localhost", request_queue="default"):
+def rabbitmq_context(host=rabbitmq_host, request_queue="default"):
     """
     Creates a RabbitMQ context for handling requests and responses.
 
@@ -117,7 +120,7 @@ def rabbitmq_context(host="localhost", request_queue="default"):
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(
             host=host,
-            port="5672",
+            port=rabbitmq_port,
             virtual_host="/",
             credentials=pika.PlainCredentials("guest", "guest"),
         )
