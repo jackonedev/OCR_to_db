@@ -14,6 +14,8 @@ from ocrlogic.ocr_core import ocr_core
 
 from .middleware_out import rabbitmq_context
 from .tools import _save_file_to_server
+import os
+import tempfile
 
 router = APIRouter(
     prefix="/ocr",
@@ -35,11 +37,15 @@ async def ocr_image(
 
     response = {}
     tasks = []
-
+    temp_file_paths = []
     for img in images:
         print("Images Uploaded: ", img.filename)
-        temp_file = _save_file_to_server(img, path="./", save_as=img.filename)
-        tasks.append(asyncio.create_task(ocr_core(img_path=temp_file, lang=lang)))
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+            temp_file_paths.append(temp_file.name)
+            await img.seek(0)
+            with open(temp_file_paths[-1], "wb") as temp_file:
+                temp_file.write(await img.read())
+            tasks.append(asyncio.create_task(ocr_core(img_path=temp_file_paths[-1], lang=lang)))
 
     # OCR execution
     try:
@@ -52,7 +58,7 @@ async def ocr_image(
 
     # Send text to LLM service
     try:
-        with rabbitmq_context(host="rabbitmq", request_queue="ocr_llm") as (
+        with rabbitmq_context(request_queue="ocr_llm") as (
             client,
             connection,
             channel,
@@ -71,5 +77,10 @@ async def ocr_image(
     except pika.exceptions.AMQPConnectionError as e:
         print(str(e))
         raise HTTPException(status_code=503, detail="RabbitMQ Service Unavailable") from e
+
+    # Delete temporary files
+    for temp_file in temp_file_paths:
+        if os.path.exists(temp_file):
+            os.remove(temp_file)
 
     return response
