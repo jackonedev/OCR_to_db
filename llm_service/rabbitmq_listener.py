@@ -1,4 +1,3 @@
-import os
 from api.middleware_in import RabbitMQReceiver
 
 
