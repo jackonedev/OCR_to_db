@@ -164,3 +164,4 @@ cython_debug/
 .vscode*
 docker-compose.debug.yml
 *cra.py
+*_template_.py
