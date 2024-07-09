@@ -6,6 +6,7 @@ esperar la respuesta de este último.
 
 import asyncio
 import os
+import socket
 import tempfile
 from typing import Annotated
 
@@ -32,7 +33,11 @@ async def ocr_image(
 ):
     """
     Recibe una imagen y la procesa para obtener el texto que contiene.
-    Luego envía el texto al servicio de LLM y retorna la respuesta de este.
+    
+    Ademas, envía el texto al servicio de LLM por medio de RabbitMQ queue.
+    Si el servicio está disponible espera la inferencia y la incluye en la respuesta.
+    El LLM retorna un esquema tipo tabla de los datos encontrados en el texto.
+    Los esquemas de tabla solo incluyen Ticket de compras.
     """
 
     response = {}
@@ -81,6 +86,11 @@ async def ocr_image(
         raise HTTPException(
             status_code=503, detail="RabbitMQ Service Unavailable"
         ) from e
+    except socket.gaierror:
+        print("Error: Name or service not known. Could not stablish the connection.")
+    # pylint: disable=W0718
+    except Exception as e:
+        print(f"Unexpected Error: {e}")
 
     # Delete temporary files
     for temp_file in temp_file_paths:
