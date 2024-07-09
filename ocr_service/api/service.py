@@ -85,5 +85,8 @@ async def ocr_image(
     for temp_file in temp_file_paths:
         if os.path.exists(temp_file):
             os.remove(temp_file)
+            
+    # Save params
+    response["ocr_lang"] = lang
 
     return response
