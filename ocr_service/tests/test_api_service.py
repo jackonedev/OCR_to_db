@@ -58,8 +58,15 @@ async def test_ocrcore_invalid_lang_param():
         img_name = img.split("/")[-1]
         files = [("images", (img_name, open(img, "rb"), "image/jpeg"))]
         response = client.post("/ocr/images", files=files, params={"lang": lang})
-
-    assert response.status_code == 400
+    assert response.status_code == 422
     assert response.json() == {
-        "detail": f"Language {lang} not supported. Please choose between 'eng' or 'spa'."
+        "detail": [
+            {
+                "type": "enum",
+                "loc": ["query", "lang"],
+                "msg": "Input should be 'spa', 'eng' or 'spa+eng'",
+                "input": "gerrrr",
+                "ctx": {"expected": "'spa', 'eng' or 'spa+eng'"},
+            }
+        ]
     }
