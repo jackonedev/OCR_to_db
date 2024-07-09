@@ -13,6 +13,7 @@ import pika
 from fastapi import APIRouter, File, HTTPException, UploadFile
 
 from ocrlogic.ocr_core import ocr_core
+from utils.schemas import OCRLanguage
 
 from .middleware_out import rabbitmq_context
 
@@ -27,7 +28,7 @@ async def ocr_image(
     images: Annotated[
         list[UploadFile], File(description="Multiple Images with text to be extracted")
     ],
-    lang: str = "eng",
+    lang: OCRLanguage = "eng",
 ):
     """
     Recibe una imagen y la procesa para obtener el texto que contiene.
@@ -85,7 +86,7 @@ async def ocr_image(
     for temp_file in temp_file_paths:
         if os.path.exists(temp_file):
             os.remove(temp_file)
-            
+
     # Save params
     response["ocr_lang"] = lang
 
