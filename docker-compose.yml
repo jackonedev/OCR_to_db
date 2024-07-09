@@ -23,6 +23,9 @@ services:
     restart: always
     volumes:
       - ./llm_service/.env:/app/.env
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
 
   rabbitmq:
     image: rabbitmq:3-management

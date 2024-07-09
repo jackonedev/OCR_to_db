@@ -2,6 +2,7 @@ import pytesseract as tesseract
 from PIL import Image
 
 from ocrlogic.image_utils import open_static_image
+from utils.schemas import OCRLanguage
 
 
 async def ocr_core(img_path, lang="eng"):
@@ -14,7 +15,7 @@ async def ocr_core(img_path, lang="eng"):
         Options: "eng" (English) or "spa" (Spanish).
 
     """
-    if lang not in ["eng", "spa"]:
+    if lang not in OCRLanguage.__members__.values():
         raise ValueError(
             f"Language {lang} not supported. Please choose between 'eng' or 'spa'."
         )
