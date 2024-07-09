@@ -33,7 +33,7 @@ async def ocr_image(
 ):
     """
     Recibe una imagen y la procesa para obtener el texto que contiene.
-    
+
     Ademas, envía el texto al servicio de LLM por medio de RabbitMQ queue.
     Si el servicio está disponible espera la inferencia y la incluye en la respuesta.
     El LLM retorna un esquema tipo tabla de los datos encontrados en el texto.
